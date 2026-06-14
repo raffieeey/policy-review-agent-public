@@ -1,0 +1,28 @@
+# Policy Review Agent — Phase 1 MVP
+# Python 3.12+
+
+# === LLM & LangChain ---
+langchain-anthropic==0.3.5
+langchain-text-splitters==0.3.8
+
+# --- Document Parsing ---
+docling==2.14.0
+
+# --- Vector Store ---
+qdrant-client==1.12.1
+
+# --- Embeddings ---
+sentence-transformers==3.4.1
+
+# --- Sparse Search ---
+rank-bm25==0.2.2
+
+# --- Frontend ---
+streamlit==1.41.1
+
+# --- Data Validation ---
+pydantic==2.10.5
+pydantic-settings==2.7.1
+
+# --- Utilities ---
+numpy==1.26.4
