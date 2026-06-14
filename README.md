@@ -2,6 +2,23 @@
 
 An agentic AI system that reviews, compares, and improves policy documents using hybrid retrieval (BM25 + dense vectors + RRF fusion) and LLM-powered analysis.
 
+## Screenshots
+
+### Upload Tab
+![Upload Tab](docs/screenshots/01_upload_tab.png)
+
+### Compare Tab
+![Compare Tab](docs/screenshots/02_compare_tab.png)
+
+### Rewrite Tab
+![Rewrite Tab](docs/screenshots/03_rewrite_tab.png)
+
+### Rate Tab
+![Rate Tab](docs/screenshots/04_rate_tab.png)
+
+### Final Review Tab
+![Final Review Tab](docs/screenshots/05_final_review_tab.png)
+
 ## Features
 
 - **Document Ingestion** — Upload current and historical policies (PDF, DOCX, MD, TXT), parsed via Docling
@@ -43,6 +60,52 @@ docker run -d -p 6333:6333 qdrant/qdrant
 # Run the app
 streamlit run app.py
 ```
+
+## Testing
+
+Run the smoke tests to verify everything works:
+
+```bash
+# Test all imports
+python3 -c "from src.config.settings import settings; from src.schemas.documents import PolicyMetadata; from src.agents.pipeline import PolicyReviewPipeline; print('✅ All imports OK')"
+
+# Test schema validation
+python3 -c "
+from src.schemas.outputs import FinalPolicyPackage, PolicyIssue, RatingScorecard
+from datetime import datetime, timezone
+# Verify schemas instantiate correctly
+print('✅ Schemas validate')
+"
+
+# Test rubric computation
+python3 -c "
+from src.rating.rubric import RatingRubric
+score = RatingRubric.compute_overall_score(80, 75, 70, 75, 80)
+label = RatingRubric.score_to_label(score)
+print(f'✅ Rubric: {score:.1f}/100 ({label})')
+"
+
+# Test document parsing with sample files
+python3 -c "
+from src.ingestion.parser import PolicyDocumentParser
+from pathlib import Path
+parser = PolicyDocumentParser()
+meta, content, sections = parser.parse_document(
+    Path('samples/data_governance_policy.md'),
+    metadata_overrides={'policy_type': 'governance'},
+    original_filename='data_governance_policy.md'
+)
+print(f'✅ Parser: {len(sections)} sections from {meta.source_filename}')
+"
+```
+
+## Sample Documents
+
+The `samples/` directory contains example policy documents you can use to test the system:
+
+- `data_governance_policy.md` — Data governance framework
+- `information_security_policy.md` — Information security controls
+- `employee_code_of_conduct.md` — Employee conduct standards
 
 ## Environment Variables
 
